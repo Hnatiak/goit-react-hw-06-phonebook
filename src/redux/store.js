@@ -1,44 +1,37 @@
-import {
-    configureStore,
-    getDefaultMiddleware,
-    // combineReducers,
-  } from "@reduxjs/toolkit";
-  import logger from "redux-logger";
-  import storage from "redux-persist/lib/storage";
-  import {
-    persistStore,
-    persistReducer,
-    FLUSH,
-    REHYDRATE,
-    PAUSE,
-    PERSIST,
-    PURGE,
-    REGISTER,
-  } from "redux-persist";
-  import appReducer from "./app/app-reducer";
-  
-  console.log(getDefaultMiddleware());
-  const middleware = [
-    ...getDefaultMiddleware({
-      serializableCheck: {
-        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-      },
-    }),
-    logger,
-  ];
-  
-  const persistConfig = {
-    key: "app",
-    storage,
-    blacklist: ["filter"],
-  };
-  
-  const store = configureStore({
-    reducer: { app: persistReducer(persistConfig, appReducer) },
-    middleware,
-    devTools: process.env.NODE_ENV === "development",
-  });
-  
-const persistor = persistStore(store);
+import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
 
-export default { store, persistor };
+import phonebookReducer from "./app/app-reducer";
+import {
+  persistStore,
+  persistReducer,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from "redux-persist";
+import storage from "redux-persist/lib/storage";
+
+const middleware = [
+  ...getDefaultMiddleware({
+    serializableCheck: {
+      ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+    },
+  }),
+];
+
+const phonebookPersistConfig = {
+  key: "phonebook",
+  storage,
+  blacklist: ["filter"],
+};
+
+export const store = configureStore({
+  reducer: {
+    phonebook: persistReducer(phonebookPersistConfig, phonebookReducer),
+  },
+  middleware,
+});
+
+export const persistor = persistStore(store);
